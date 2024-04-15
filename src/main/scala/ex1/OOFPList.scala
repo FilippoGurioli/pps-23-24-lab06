@@ -60,9 +60,7 @@ enum List[A]:
     case (n, list) if n > 0 => (n - 1, a :: list)
     case (_, list) => (0, list)
   ) match { case (a,b) => b }
-  def collect(predicate: PartialFunction[A, A]): List[A] = foldRight(Nil())((a,b) => 
-    if predicate.isDefinedAt(a) then predicate(a) :: b else b
-  )
+  def collect(predicate: PartialFunction[A, A]): List[A] = foldRight(Nil())((a,b) => filter(predicate.isDefinedAt(_)).map(predicate(_)))
 // Factories
 object List:
 
