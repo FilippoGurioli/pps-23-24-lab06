@@ -51,12 +51,18 @@ enum List[A]:
   def partition(predicate: A => Boolean): (List[A], List[A]) = foldRight((Nil(), Nil()))((a, b) => b match
     case (i1, i2) => if predicate(a) then (a :: i1, i2) else (i1, a :: i2)
   )
-  def span(predicate: A => Boolean): (List[A], List[A]) = foldRight((false, Nil(), Nil()))((a,b) =>
-    if !predicate(a) && !b._1 then (b._1, b._2, a :: b._3)
+  def span(predicate: A => Boolean): (List[A], List[A]) = foldRight((false, Nil[A](), Nil[A]()))((a,b) =>
+    if !predicate(a) && !b._1 then (false, b._2, a :: b._3)
+    else if !predicate(a) && b._1 then (true, Nil(), a :: b._2.append(b._3))
     else (true, a :: b._2, b._3)
-  ).map(elem => (elem._2, elem._3))
-  def takeRight(n: Int): List[A] = ???
-  def collect(predicate: PartialFunction[A, A]): List[A] = ???
+  ) match { case (a,b,c) => (b,c) }
+  def takeRight(n: Int): List[A] = foldRight((n, Nil[A]()))((a, b) => b match
+    case (n, list) if n > 0 => (n - 1, a :: list)
+    case (_, list) => (0, list)
+  ) match { case (a,b) => b }
+  def collect(predicate: PartialFunction[A, A]): List[A] = foldRight(Nil())((a,b) => 
+    if predicate.isDefinedAt(a) then predicate(a) :: b else b
+  )
 // Factories
 object List:
 
