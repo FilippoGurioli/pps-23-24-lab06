@@ -55,7 +55,7 @@ enum List[A]:
     if !predicate(a) && !b._1 then (false, b._2, a :: b._3)
     else if !predicate(a) && b._1 then (true, Nil(), a :: b._2.append(b._3))
     else (true, a :: b._2, b._3)
-  ) match { case (a,b,c) => (b,c) }
+  ) match { case (a,b,c) => (b,c) } //this is cleary an opaque code...
   def takeRight(n: Int): List[A] = foldRight((n, Nil[A]()))((a, b) => b match
     case (n, list) if n > 0 => (n - 1, a :: list)
     case (_, list) => (0, list)

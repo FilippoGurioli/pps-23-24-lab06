@@ -41,19 +41,19 @@ object Conference:
 
             override def acceptedArticles(): Set[Int] = articles.flatMap((a, s) => if this.averageFinalScore(a) > 5 then Some(a) else None).toSet
 
-            override def orderedScores(article: Int)(question: Question): Seq[Int] = methodThatIDunnoHowToCall(article)((q, _) => q == question).sortWith(_ < _)
+            override def orderedScores(article: Int)(question: Question): Seq[Int] = findFilterMap(article)((q, _) => q == question).sortWith(_ < _)
 
             override def sortedAcceptedArticles(): Seq[(Int, Double)] = ???
 
             override def averageFinalScore(article: Int): Double = 
-                val scores = methodThatIDunnoHowToCall(article)((q, _) => q == Question.FINAL)
+                val scores = findFilterMap(article)((q, _) => q == Question.FINAL)
                 scores.sum(Numeric[Int]) / scores.length
 
             private def flatMapAndSum(seq: Seq[(Question, Int)])(question: Question): Double =
                 seq.flatMap(s => if s._1 == Question.FINAL then Some(s._2) else None).sum(using Numeric[Int])
 
 
-            private def methodThatIDunnoHowToCall(article: Int)(predicate: ((Question, Int)) => Boolean): Seq[Int] = articles
+            private def findFilterMap(article: Int)(predicate: ((Question, Int)) => Boolean): Seq[Int] = articles
                 .find((a, _) => a == article)
                 .get._2
                 .filter(predicate)
